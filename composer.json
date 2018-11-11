@@ -1,0 +1,19 @@
+{
+    "name": "bsfp/routing",
+    "authors": [
+        {
+            "name": "Noice Dious",
+            "email": "dious@pm.me"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "BSFP\\Tests\\": "tests/",
+            "BSFP\\": "src/"
+        },
+        "files": [
+            "src/R/Method.php"
+        ]
+    },
+    "require": {}
+}
