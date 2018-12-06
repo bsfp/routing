@@ -4,7 +4,6 @@ namespace BSFP\R;
 class ImRoute
 {
   private $route;
-  private $regex;
 
   private $result = [];
 
@@ -13,9 +12,9 @@ class ImRoute
     $this->route = $route;
   }
 
-  public function match(string $route): bool
+  public function match(string $path): bool
   {
-    return ($route === $this->getPath());
+    return ($path === $this->route->getPath());
   }
 
   public function getData(): array
@@ -23,23 +22,18 @@ class ImRoute
     return $this->result;
   }
 
-  public function getMethod(): string
+  public function isSecured(): bool
   {
-    return $this->route->getMethod();
-  }
-
-  public function getPath(): string
-  {
-    return $this->route->getPath();
-  }
-
-  public function getParameters(): ?array
-  {
-    return $this->route->getParameters();
+    return $this->route->getIsSecured();
   }
 
   public function getAction()
   {
     return $this->route->getAction();
+  }
+
+  public function getMethod()
+  {
+    return $this->route->getMethod();
   }
 }

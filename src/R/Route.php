@@ -3,13 +3,15 @@ namespace BSFP\R;
 
 class Route
 {
-  private $method;
+  private $method = Method\ALL;
 
   private $path;
 
   private $parameters;
 
   private $action;
+
+  private $is_secured = false;
 
   public function __construct() 
   {}
@@ -32,6 +34,13 @@ class Route
   public function setAction($action): Route
   {
     $this->action = $action;
+
+    return $this;
+  }
+
+  public function setIsSecured(): Route
+  {
+    $this->is_secured = true;
 
     return $this;
   }
@@ -59,5 +68,10 @@ class Route
   public function getAction()
   {
     return $this->action;
+  }
+
+  public function getIsSecured(): bool
+  {
+    return $this->is_secured;
   }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace BSFP\R\Method;
 
-const ALL = '';
+const ALL = '*';
 const GET = 'GET';
 const POST = 'POST';
 const PUT = 'PUT';

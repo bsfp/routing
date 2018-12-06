@@ -1,28 +1,64 @@
 <?php
 namespace BSFP;
 
+use BSFP\R\Route;
+
 class Routing
 {
   private $routes;
 
-  public function __construct(Iterable $routes)
+  public function __construct(\Traversable $routes)
   {
     $this->routes = $routes;
   }
 
-  public function fetch($path): ?R\ImRoute
+  /**
+   * @param string $path
+   * @param bool $noException
+   * @return R\ImRoute|null
+   * @throws R\RouteNotFoundException
+   */
+  public function fetch(string $path, bool $noException = false): ?R\ImRoute
   {
     foreach ($this->routes as $route) {
+      /* @var R\ImRoute $route */
       if ($route->match($path)) {
         return $route;
       }
     }
-    return null;
+
+    if ($noException) {
+      return null;
+    }
+
+    throw new R\RouteNotFoundException();
   }
 
-  public function fetchAll($path): array
+  /**
+   * @param string $method
+   * @return Routing
+   */
+  public function reduce(string $method): Routing
   {
-    return array_filter($this->routes, function ($route) use ($path) {
+    $this->route = array_filter(iterator_to_array($this->routes, false), function ($route) use ($method) {
+      /* @var R\ImRoute $route */
+      return (
+          $route->getMethod() === $method
+       || $route->getMethod() === R\Method\ALL
+      );
+    });
+
+    return $this;
+  }
+
+  /**
+   * @param $path
+   * @return array
+   */
+  public function fetchAll(string $path): array
+  {
+    return array_filter(iterator_to_array($this->routes, false), function ($route) use ($path) {
+      /* @var R\ImRoute $route */
       return $route->match($path);
     });
   }
