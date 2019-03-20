@@ -17,6 +17,8 @@ class Route
 
   private $matches;
 
+  private $matchKeys;
+
   private $regexp;
 
   private $is_regexp;
@@ -56,18 +58,21 @@ class Route
   public function build(): ImRoute
   {
     $this->is_regexp = !(strpos($this->path, ':') === false) && count($this->parameters) !== 0;
+
     if ($this->is_regexp) {
+      $keys = [];
+      $values = [];
 
-      $keys = array_map(function ($key) {
-        return ':' . $key;
-      }, array_keys($this->parameters));
+      $this->matchKeys = array_keys($this->parameters);
 
-      $values = array_map(function ($value) {
-        return '(' . $value . ')';
-      }, array_values($this->parameters));
+      foreach ($this->parameters as $key => $value) {
+        $keys[] = ":{$key}";
+        $values[] = "({$value})";
+      }
 
       $this->regexp = '/' . str_replace($keys, $values, addcslashes($this->path, '/')) . '/';
     }
+
     return new ImRoute($this);
   }
 
@@ -78,6 +83,12 @@ class Route
     } else {
       return ($path === $this->path);
     }
+  }
+
+  public function getMatch(string $key)
+  {
+    $index = array_search($key, $this->matchKeys);
+    return $this->matches[$index + 1];
   }
 
   public function getMethod(): string

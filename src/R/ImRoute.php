@@ -37,8 +37,8 @@ class ImRoute
     return $this->route->getMethod();
   }
 
-  public function getMatches(): ?array
+  public function getMatch(string $key)
   {
-    return $this->route->getMatches();
+    return $this->route->getMatch($key);
   }
 }

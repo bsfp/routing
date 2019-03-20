@@ -30,8 +30,9 @@ final class RTest extends TestCase
     $this->assertInstanceOf(ImRoute::class, $route);
     $this->assertEquals('test-it', $route->getAction());
 
-    $route = $routes->fetch('/test/1');
+    $route = $routes->fetch('/test/12');
     $this->assertEquals('test-with-param', $route->getAction());
+    $this->assertEquals('12', $route->getMatch('id'));
 
     $route = $routes->fetch('/test');
     $this->assertEquals('test-single', $route->getAction());
