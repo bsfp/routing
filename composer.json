@@ -15,5 +15,11 @@
             "src/R/Method.php"
         ]
     },
-    "require": {}
+    "require": {
+        "gpolguere/path-to-regexp-php": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "7.5.x-dev"
+    }
 }

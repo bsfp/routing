@@ -1,6 +1,8 @@
 <?php
 namespace BSFP\R;
 
+use PathToRegexp;
+
 class Route
 {
   private $method = Method\ALL;
@@ -12,6 +14,12 @@ class Route
   private $action;
 
   private $is_secured = false;
+
+  private $matches;
+
+  private $regexp;
+
+  private $is_regexp;
 
   public function __construct() 
   {}
@@ -47,7 +55,21 @@ class Route
 
   public function build(): ImRoute
   {
+    $this->is_regexp = !(strpos($this->path, ':') === false);
+    if ($this->is_regexp) {
+      $this->regexp = PathToRegexp::convert($this->path, $this->parameters);
+    }
     return new ImRoute($this);
+  }
+
+  public function match(string $path): bool
+  {
+    if ($this->is_regexp) {
+      $this->matches = PathToRegexp::match($this->path, $path);
+      return $this->matches !== null;
+    } else {
+      return ($path === $this->path);
+    }
   }
 
   public function getMethod(): string
@@ -63,6 +85,11 @@ class Route
   public function getParameters(): ?array
   {
     return $this->parameters;
+  }
+
+  public function getMatches(): ?array
+  {
+    return $this->matches;
   }
 
   public function getAction()
