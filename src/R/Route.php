@@ -85,6 +85,11 @@ class Route
     }
   }
 
+  public function hasMatches(): bool
+  {
+    return count($this->matches) !== 0;
+  }
+
   public function getMatch(string $key)
   {
     $index = array_search($key, $this->matchKeys);

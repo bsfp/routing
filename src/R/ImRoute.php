@@ -41,4 +41,9 @@ class ImRoute
   {
     return $this->route->getMatch($key);
   }
+
+  public function hasMatches(): bool
+  {
+    return $this->route->hasMatches();
+  }
 }
