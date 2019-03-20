@@ -14,7 +14,7 @@ class ImRoute
 
   public function match(string $path): bool
   {
-    return $this->match($path);
+    return $this->route->match($path);
   }
 
   public function getData(): array

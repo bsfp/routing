@@ -40,7 +40,7 @@ class Routing
    */
   public function reduce(string $method): Routing
   {
-    $this->route = array_filter(iterator_to_array($this->routes, false), function ($route) use ($method) {
+    $routes = array_filter(iterator_to_array($this->routes, false), function ($route) use ($method) {
       /* @var R\ImRoute $route */
       return (
           $route->getMethod() === $method
@@ -48,7 +48,7 @@ class Routing
       );
     });
 
-    return $this;
+    return new self(new \ArrayIterator($routes));
   }
 
   /**

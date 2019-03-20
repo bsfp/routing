@@ -55,9 +55,18 @@ class Route
 
   public function build(): ImRoute
   {
-    $this->is_regexp = !(strpos($this->path, ':') === false);
+    $this->is_regexp = !(strpos($this->path, ':') === false) && count($this->parameters) !== 0;
     if ($this->is_regexp) {
-      $this->regexp = PathToRegexp::convert($this->path, $this->parameters);
+
+      $keys = array_map(function ($key) {
+        return ':' . $key;
+      }, array_keys($this->parameters));
+
+      $values = array_map(function ($value) {
+        return '(' . $value . ')';
+      }, array_values($this->parameters));
+
+      $this->regexp = '/' . str_replace($keys, $values, addcslashes($this->path, '/')) . '/';
     }
     return new ImRoute($this);
   }
@@ -65,8 +74,7 @@ class Route
   public function match(string $path): bool
   {
     if ($this->is_regexp) {
-      $this->matches = PathToRegexp::match($this->path, $path);
-      return $this->matches !== null;
+      return (bool)preg_match($this->regexp, $path, $this->matches);
     } else {
       return ($path === $this->path);
     }
