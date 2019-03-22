@@ -70,7 +70,7 @@ class Route
         $values[] = "({$value})";
       }
 
-      $this->regexp = '/' . str_replace($keys, $values, addcslashes($this->path, '/')) . '/';
+      $this->regexp = '/^' . str_replace($keys, $values, addcslashes($this->path, '/')) . '$/';
     }
 
     return new ImRoute($this);
@@ -87,13 +87,22 @@ class Route
 
   public function hasMatches(): bool
   {
-    return count($this->matches) !== 0;
+    return is_array($this->matchKeys) ? count($this->matchKeys) !== 0 : false;
   }
 
   public function getMatch(string $key)
   {
     $index = array_search($key, $this->matchKeys);
-    return $this->matches[$index + 1];
+    return $this->matches[$index + 1] ?? null;
+  }
+
+  public function getAllMatches(): array
+  {
+    $matches = [];
+    foreach ($this->matchKeys as $index => $key) {
+      $matches[$key] = $this->matches[$index + 1] ?? null;
+    }
+    return $matches;
   }
 
   public function getMethod(): string

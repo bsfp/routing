@@ -42,4 +42,30 @@ final class RTest extends TestCase
     $this->expectException(RouteNotFoundException::class);
     $routesReduced->fetch('/test');
   }
+
+  public function testGetMatches(): void
+  {
+    $routes = new \BSFP\R(new \ArrayIterator([
+      (new Route())->setAction('digit')->setPath('/:id', ['id' => '\\d+'])->build(),
+      (new Route())->setAction('string')->setPath('/:key', ['key' => '\\w+'])->build(),
+      (new Route())->setAction('string-digit')->setPath('/:key/:id', ['key' => '\\w+', 'id' => '\\d+'])->build(),
+    ]));
+
+    $route1 = $routes->fetch('/test');
+    $this->assertTrue($route1->hasMatches());
+    $this->assertEquals('string', $route1->getAction());
+    $this->assertEquals('test', $route1->getMatch('key'));
+
+    $route2 = $routes->fetch('/12');
+    $this->assertTrue($route2->hasMatches());
+    $this->assertEquals('digit', $route2->getAction());
+    $this->assertEquals(12, $route2->getMatch('id'));
+
+    $route3 = $routes->fetch('/test/12');
+    $this->assertTrue($route3->hasMatches());
+    $this->assertEquals('string-digit', $route3->getAction());
+    $this->assertEquals('test', $route3->getMatch('key'));
+    $this->assertEquals(12, $route3->getMatch('id'));
+    $this->assertEquals(['key' => 'test', 'id' => 12], $route3->getAllMatches());
+  }
 }
